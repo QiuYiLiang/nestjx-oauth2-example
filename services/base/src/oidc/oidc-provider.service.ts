@@ -1,9 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Provider } from 'oidc-provider'
 import { jwks } from '../jwks'
-import { TypeOrmAdapter } from './adapter/typeorm-adapter.service'
 import { AccountService } from './account/account.service'
 import { ConfigService } from '@nestjs/config'
+import { createTypeOrmAdapter } from './adapter/createTypeOrmAdapter'
+import { InjectDataSource } from '@nestjs/typeorm'
+import { DataSource } from 'typeorm'
 
 @Injectable()
 export class OidcProviderService {
@@ -11,6 +13,8 @@ export class OidcProviderService {
   private readonly _logger: Logger
 
   constructor(
+    @InjectDataSource()
+    dataSource: DataSource,
     private accountService: AccountService,
     private configService: ConfigService
   ) {
@@ -20,7 +24,7 @@ export class OidcProviderService {
         keys: this.configService.get('SECURE_KEY').split(':'),
       },
       jwks,
-      adapter: TypeOrmAdapter,
+      adapter: createTypeOrmAdapter(dataSource),
       findAccount: this.accountService.findAccount.bind(this.accountService),
       interactions: {
         url(ctx, interaction) {

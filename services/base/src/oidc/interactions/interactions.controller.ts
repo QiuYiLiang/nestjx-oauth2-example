@@ -35,14 +35,15 @@ export class InteractionsController {
       )
 
       if (prompt.name === 'login') {
-        return response.render('login', {
-          client,
-          uid,
-          details: prompt.details,
-          params,
-          title: 'Sign-in',
-          flash: undefined,
-        })
+        return request.headers.cookie
+        // response.render('login', {
+        //   client,
+        //   uid,
+        //   details: prompt.details,
+        //   params,
+        //   title: 'Sign-in',
+        //   flash: undefined,
+        // })
       }
 
       return response.render('interaction', {
