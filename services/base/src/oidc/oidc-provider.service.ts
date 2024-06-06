@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import Provider from 'oidc-provider'
+import { Provider } from 'oidc-provider'
 import { jwks } from '../jwks'
 import { TypeOrmAdapter } from './adapter/typeorm-adapter.service'
 import { AccountService } from './account/account.service'
