@@ -2,7 +2,10 @@
   "name": "oauth2-exmaple",
   "version": "0.0.0",
   "type": "module",
-  "scripts": {},
+  "scripts": {
+    "preinstall": "pnpm docker",
+    "docker": "docker-compose up -d"
+  },
   "author": "qiuyiliang",
   "dependencies": {},
   "devDependencies": {}
