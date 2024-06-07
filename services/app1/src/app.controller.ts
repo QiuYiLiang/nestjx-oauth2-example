@@ -16,8 +16,8 @@ export class AppController {
     @Res() res: Response
   ) {
     if (code) {
-      const data = await this.authService.getOidcToken({ code, state })
-      console.log(data)
+      const userInfo = await this.authService.getOidcUserInfo({ code, state })
+      res.cookie('x-token', await this.authService.createToken(userInfo))
     }
     res.redirect('http://localhost:5000')
   }

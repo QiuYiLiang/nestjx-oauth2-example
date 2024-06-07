@@ -3,7 +3,7 @@ import { AppController } from './app.controller'
 import { APP_GUARD } from '@nestjs/core'
 import { AuthGuard } from './auth.guard'
 import { AuthService } from './auth.service'
-import { JwtModule, JwtService } from '@nestjs/jwt'
+import { JwtModule } from '@nestjs/jwt'
 import { jwtSecret } from './jwtSecret'
 
 @Module({
@@ -25,7 +25,6 @@ import { jwtSecret } from './jwtSecret'
       useClass: AuthGuard,
     },
     AuthService,
-    JwtService,
   ],
 })
 export class AppModule {}

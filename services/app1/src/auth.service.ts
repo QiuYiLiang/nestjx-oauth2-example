@@ -10,21 +10,28 @@ const baseUrl = 'http://localhost:3000'
 @Injectable()
 export class AuthService {
   constructor(private readonly jwtService: JwtService) {}
-  statesMap: Record<string, string> = {}
-  async getOidcToken({ code, state }: { code: string; state: string }) {
+  statesMap: Record<string, any> = {}
+  async getOidcUserInfo({
+    code,
+    state: stateId,
+  }: {
+    code: string
+    state: string
+  }) {
     const authorization =
       'Basic ' +
       enc.Base64.stringify(
         enc.Utf8.parse('app1:strastrastrcxdzxctwparstarstwqdqwfpat')
       )
-    const code_verifier = this.statesMap[state]
-    try {
-      return await axios.post(
+    const state = this.statesMap[stateId]
+    const code_verifier = state.code_verifier
+    const access_token = (
+      await axios.post(
         'http://localhost:3000/oidc/token',
         {
           code,
           grant_type: 'authorization_code',
-          redirect_uri: 'http://localhost:5000/api/auth/login',
+          redirect_uri: state.redirect_uri,
           code_verifier,
         },
         {
@@ -35,14 +42,16 @@ export class AuthService {
           withCredentials: true,
         }
       )
-    } catch (error) {
-      console.log(error)
-    }
+    ).data.access_token
+    const userInfo = (
+      await axios.get('http://localhost:3000/oidc/me', {
+        params: { access_token },
+      })
+    ).data
+    return userInfo
   }
-  async createToken() {
-    return {
-      access_token: await this.jwtService.signAsync({ uid: 'zhangsan' }),
-    }
+  async createToken(payload: any) {
+    return await this.jwtService.signAsync(payload)
   }
   async validateToken(token?: string) {
     if (!token) {
@@ -63,16 +72,15 @@ export class AuthService {
       redirect_uri: `${clientUrl}/login/`,
       post_logout_redirect_uri: `${clientUrl}/logout/`,
       response_type: 'code',
-      scope: 'openid',
-      response_mode: 'query',
+      scope: 'openid email',
       filterProtocolClaims: true,
     })
 
     const { state, url } = await oidcClient.createSigninRequest({
-      state: {},
+      state: { hh: 123 },
       nonce: v4(),
     })
-    this.statesMap[state.id] = state.code_verifier
+    this.statesMap[state.id] = state
     return url
   }
 }
