@@ -16,17 +16,11 @@ export class InteractionsController {
     this._logger = new Logger('InteractionsController')
   }
 
-  @Get(':uid')
-  async renderInteraction(
-    @Req() request: Request,
-    @Res() response: Response,
-    @Next() next: NextFunction
-  ) {
+  // 获取登录页状态
+  @Post('getStatus')
+  async getStatus(@Req() req: Request, @Res() res: Response) {
     try {
-      const details = await this.oidcService.oidc.interactionDetails(
-        request,
-        response
-      )
+      const details = await this.oidcService.oidc.interactionDetails(req, res)
       this._logger.log(details)
       const { uid, prompt, params } = details
 
@@ -35,59 +29,49 @@ export class InteractionsController {
       )
 
       if (prompt.name === 'login') {
-        return request.headers.cookie
-        // response.render('login', {
-        //   client,
-        //   uid,
-        //   details: prompt.details,
-        //   params,
-        //   title: 'Sign-in',
-        //   flash: undefined,
-        // })
+        res.json({
+          mode: 'login',
+        })
+        return
       }
 
-      return response.render('interaction', {
-        client,
-        uid,
-        details: prompt.details,
-        params,
-        title: 'Authorize',
-      })
+      if (prompt.name === 'consent') {
+        res.json({
+          mode: 'interaction',
+          data: {
+            client,
+            uid,
+            details: prompt.details,
+            params,
+            title: 'Authorize',
+          },
+        })
+        return
+      }
     } catch (err) {
-      return next(err)
+      res.json({
+        mode: 'error',
+        errMsg: '错误',
+      })
     }
   }
 
-  @Post(':uid/login')
-  async login(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Next() next: NextFunction
-  ) {
+  // 登录
+  @Post('login')
+  async login(@Req() req: Request, @Res() res: Response) {
     try {
-      const { uid, prompt, params } =
+      const { uid, params, prompt } =
         await this.oidcService.oidc.interactionDetails(req, res)
       assert.strictEqual(prompt.name, 'login')
-      const client = await this.oidcService.oidc.Client.find(
-        params.client_id as string
-      )
-
       const accountId = await this.accountService.authenticate(
         req.body.email,
         req.body.password
       )
 
       if (!accountId) {
-        res.render('login', {
-          client,
-          uid,
-          details: prompt.details,
-          params: {
-            ...params,
-            login_hint: req.body.email,
-          },
-          title: 'Sign-in',
-          flash: 'Invalid email or password.',
+        res.json({
+          success: false,
+          errMsg: '密码错误',
         })
         return
       }
@@ -96,16 +80,28 @@ export class InteractionsController {
         login: { accountId },
       }
 
-      await this.oidcService.oidc.interactionFinished(req, res, result, {
-        mergeWithLastSubmission: false,
+      const data = await this.oidcService.oidc.interactionResult(
+        req,
+        res,
+        result,
+        {
+          mergeWithLastSubmission: false,
+        }
+      )
+
+      res.json({
+        success: true,
+        data,
       })
     } catch (err) {
-      next(err)
+      res.json({
+        success: false,
+      })
     }
   }
-
-  @Post(':uid/confirm')
-  async confirmInteraction(
+  // 同意授权
+  @Post('authorization')
+  async authorization(
     @Req() req: Request,
     @Res() res: Response,
     @Next() next: NextFunction
@@ -161,8 +157,17 @@ export class InteractionsController {
       }
 
       const result = { consent }
-      await this.oidcService.oidc.interactionFinished(req, res, result as any, {
-        mergeWithLastSubmission: true,
+      const data = await this.oidcService.oidc.interactionResult(
+        req,
+        res,
+        result as any,
+        {
+          mergeWithLastSubmission: true,
+        }
+      )
+      res.json({
+        success: true,
+        data,
       })
     } catch (err) {
       next(err)

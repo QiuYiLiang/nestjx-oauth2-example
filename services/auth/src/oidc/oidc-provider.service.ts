@@ -28,7 +28,8 @@ export class OidcProviderService {
       findAccount: this.accountService.findAccount.bind(this.accountService),
       interactions: {
         url(ctx, interaction) {
-          return `/interaction/${interaction.uid}`
+          const { uid } = interaction
+          return `http://localhost:5000/?uid=${uid}`
         },
       },
       claims: {

@@ -7,7 +7,11 @@ export class AuthGuard implements CanActivate {
   constructor(private readonly authService: AuthService) {}
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest()
+
     const response: Response = context.switchToHttp().getResponse()
+    if (request.url.startsWith('/api/login/')) {
+      return true
+    }
     const headers = request.headers
     const token = headers['x-token']
     const validRes = await this.authService.validateToken(token)
