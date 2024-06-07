@@ -25,6 +25,7 @@ export class AuthService {
     code: string
     state: string
   }) {
+    // TODO: 使用 refreshToken 刷新
     const authorization =
       'Basic ' +
       enc.Base64.stringify(
