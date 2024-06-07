@@ -51,7 +51,7 @@ export class AuthService {
     return userInfo
   }
   async createToken(payload: any) {
-    return await this.jwtService.signAsync(payload)
+    return await this.jwtService.signAsync(payload, { expiresIn: '1h' })
   }
   async validateToken(token?: string) {
     if (!token) {
@@ -82,5 +82,8 @@ export class AuthService {
     })
     this.statesMap[state.id] = state
     return url
+  }
+  getUserInfo(token?: string) {
+    return this.jwtService.decode(token)
   }
 }

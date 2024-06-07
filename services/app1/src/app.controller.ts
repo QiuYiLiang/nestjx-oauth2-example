@@ -1,6 +1,7 @@
 import { Controller, Get, Query, Res } from '@nestjs/common'
 import { Response } from 'express'
 import { AuthService } from './auth.service'
+import { Cookies } from './decorators/cookies.decorator'
 
 @Controller()
 export class AppController {
@@ -25,8 +26,8 @@ export class AppController {
     }
     res.redirect('http://localhost:5001')
   }
-  @Get('getData')
-  getData(): string {
-    return 'hhh'
+  @Get('getUserInfo')
+  getUserInfo(@Cookies('x-token') token: string) {
+    return this.authService.getUserInfo(token)
   }
 }
