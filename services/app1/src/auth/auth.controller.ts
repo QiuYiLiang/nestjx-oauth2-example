@@ -2,7 +2,7 @@ import { Controller, Get, Query, Res } from '@nestjs/common'
 import { Response } from 'express'
 import { AuthService } from './auth.service'
 
-const redirectUrl = 'http://localhost:3001'
+const targetUrl = 'http://localhost:5001'
 
 @Controller()
 export class AuthController {
@@ -27,9 +27,9 @@ export class AuthController {
         })
       }
       // 登陆完成跳转页面
-      res.redirect('http://localhost:5001')
+      res.redirect(targetUrl)
     } catch (error) {
-      res.redirect(`${redirectUrl}/api/login`)
+      res.redirect('/api/login')
     }
   }
 }
