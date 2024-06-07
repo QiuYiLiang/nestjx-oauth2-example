@@ -55,8 +55,10 @@ export class InteractionsController {
   @Post('login')
   async login(@Req() req: Request, @Res() res: Response) {
     try {
-      const { uid, params, prompt } =
-        await this.oidcService.oidc.interactionDetails(req, res)
+      const { prompt } = await this.oidcService.oidc.interactionDetails(
+        req,
+        res
+      )
       assert.strictEqual(prompt.name, 'login')
       const accountId = await this.accountService.authenticate(
         req.body.email,
@@ -117,10 +119,8 @@ export class InteractionsController {
       let grant
 
       if (grantId) {
-        // we'll be modifying existing grant in existing session
         grant = await this.oidcService.oidc.Grant.find(grantId)
       } else {
-        // we're establishing a new grant
         grant = new this.oidcService.oidc.Grant({
           accountId,
           clientId: params.client_id as string,
