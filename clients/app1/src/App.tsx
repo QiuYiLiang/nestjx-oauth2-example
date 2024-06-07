@@ -6,7 +6,7 @@ function App() {
       App1
       <button
         onClick={async () => {
-          const data = await request('/getUserInfo')
+          const data = await request('/getUserInfo', {})
           if (data.success === false) {
             location.href = data.data
             return
