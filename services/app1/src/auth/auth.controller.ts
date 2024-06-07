@@ -18,14 +18,18 @@ export class AuthController {
     @Query('state') state: string,
     @Res() res: Response
   ) {
-    if (code) {
-      const token = await this.authService.loginFinished({ code, state })
-      res.cookie('x-login', 1)
-      res.cookie('x-token', token, {
-        httpOnly: true,
-      })
+    try {
+      if (code) {
+        const token = await this.authService.loginFinished({ code, state })
+        res.cookie('x-login', 1)
+        res.cookie('x-token', token, {
+          httpOnly: true,
+        })
+      }
+      // 登陆完成跳转页面
+      res.redirect(redirectUrl)
+    } catch (error) {
+      res.redirect(`${redirectUrl}/api/login`)
     }
-    // 登陆完成跳转页面
-    res.redirect(redirectUrl)
   }
 }
