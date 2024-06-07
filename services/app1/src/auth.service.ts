@@ -77,7 +77,7 @@ export class AuthService {
     })
 
     const { state, url } = await oidcClient.createSigninRequest({
-      state: { hh: 123 },
+      state: {},
       nonce: v4(),
     })
     this.statesMap[state.id] = state

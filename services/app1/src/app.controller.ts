@@ -17,9 +17,13 @@ export class AppController {
   ) {
     if (code) {
       const userInfo = await this.authService.getOidcUserInfo({ code, state })
-      res.cookie('x-token', await this.authService.createToken(userInfo))
+      const token = await this.authService.createToken(userInfo)
+      res.cookie('x-login', 1)
+      res.cookie('x-token', token, {
+        httpOnly: true,
+      })
     }
-    res.redirect('http://localhost:5000')
+    res.redirect('http://localhost:5001')
   }
   @Get('getData')
   getData(): string {
