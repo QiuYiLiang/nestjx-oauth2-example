@@ -6,12 +6,11 @@ import { UserModule } from './user/user.module'
 import { ConfigModule } from '@nestjs/config'
 import { AuthModule } from './auth/auth.module'
 import { AuthService } from './auth/auth.service'
+import configuration from './config/configuration'
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
+    ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
     JwtModule.registerAsync({
       useFactory() {
         return {

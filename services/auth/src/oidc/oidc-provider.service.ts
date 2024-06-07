@@ -21,9 +21,10 @@ export class OidcProviderService {
     this._logger = new Logger('OidcProviderService')
     this._oidc = new Provider(`http://localhost:3000`, {
       cookies: {
-        keys: this.configService.get('SECURE_KEY').split(':'),
+        keys: this.configService.get('secureKey'),
       },
       jwks,
+      clients: this.configService.get('client'),
       adapter: createTypeOrmAdapter(dataSource),
       findAccount: this.accountService.findAccount.bind(this.accountService),
       interactions: {

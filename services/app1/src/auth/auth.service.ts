@@ -8,7 +8,7 @@ import { enc } from 'crypto-js'
 // 认证服务器地址
 const oauthUrl = 'http://localhost:3000/oidc'
 // 本机地址
-const siteUrl = 'http://localhost:5001/api/auth'
+const siteUrl = 'http://localhost:5001/api'
 // 授权返回
 const scope = 'openid email'
 
@@ -76,7 +76,7 @@ export class AuthService {
       client_id: 'app1',
       // 用户登陆后，oauth 服务器会回掉到本服务，并带上code，获取 token
       redirect_uri: `${siteUrl}/loginFinished`,
-      post_logout_redirect_uri: `${siteUrl}/logout/`,
+      post_logout_redirect_uri: `${siteUrl}/logout`,
       response_type: 'code',
       scope,
       filterProtocolClaims: true,

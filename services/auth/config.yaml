@@ -1,0 +1,22 @@
+db:
+  type: postgres
+  host: localhost
+  port: 54322
+  username: postgres
+  password: postgres
+  database: oauth
+  synchronize: true
+clitens:
+  - client_id: app1
+    client_secret: strastrastrcxdzxctwparstarstwqdqwfpat
+    redirect_uris:
+      - http://localhost:5001/api/loginFinished
+    response_types:
+      - code
+    grant_types:
+      - authorization_code
+    token_endpoint_auth_method:
+      - client_secret_basic
+secureKey:
+  - 0326bff5174fc029432beeb042537d11f5874c2dee52425f4d99eec44e517eca
+  - 902308b08d60db52955f07451bc51a5206a53c39721d271f659b4327149f6e09
