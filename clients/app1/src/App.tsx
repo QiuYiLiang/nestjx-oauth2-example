@@ -6,7 +6,11 @@ function App() {
       App1
       <button
         onClick={async () => {
-          const data = await axios.get('/api/auth/getUserInfo')
+          const data = (await axios.get('/api/auth/getUserInfo')).data
+          if (data.success === false) {
+            location.href = data.data
+            return
+          }
           console.log(data)
         }}
       >
