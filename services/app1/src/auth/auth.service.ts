@@ -8,7 +8,7 @@ import { enc } from 'crypto-js'
 // 认证服务器地址
 const oauthUrl = 'http://localhost:3000/oidc'
 // 本机地址
-const siteUrl = 'http://localhost:5001/api'
+const siteUrl = 'http://localhost:3001/api'
 // 授权返回
 const scope = 'openid email'
 
