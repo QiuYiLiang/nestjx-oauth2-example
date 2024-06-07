@@ -1,4 +1,4 @@
-import { Controller, Get, Logger, Next, Post, Req, Res } from '@nestjs/common'
+import { Controller, Get, Next, Post, Req, Res } from '@nestjs/common'
 import { NextFunction, Request, Response } from 'express'
 import { OidcProviderService } from '../oidc-provider.service'
 import * as assert from 'assert'
@@ -7,21 +7,16 @@ import { AccountService } from '../account/account.service'
 
 @Controller('interaction')
 export class InteractionsController {
-  private _logger: Logger
-
   constructor(
     private oidcService: OidcProviderService,
     private accountService: AccountService
-  ) {
-    this._logger = new Logger('InteractionsController')
-  }
+  ) {}
 
   // 获取登录页状态
   @Post('getStatus')
   async getStatus(@Req() req: Request, @Res() res: Response) {
     try {
       const details = await this.oidcService.oidc.interactionDetails(req, res)
-      this._logger.log(details)
       const { uid, prompt, params } = details
 
       const client = await this.oidcService.oidc.Client.find(
@@ -134,11 +129,9 @@ export class InteractionsController {
 
       if (details.missingOIDCScope) {
         grant.addOIDCScope((details.missingOIDCScope as string[]).join(' '))
-        // use grant.rejectOIDCScope to reject a subset or the whole thing
       }
       if (details.missingOIDCClaims) {
         grant.addOIDCClaims(details.missingOIDCClaims as string[])
-        // use grant.rejectOIDCClaims to reject a subset or the whole thing
       }
       if (details.missingResourceScopes) {
         for (const [indicator, scopes] of Object.entries(
@@ -152,7 +145,6 @@ export class InteractionsController {
 
       const consent = {} as BaseGrantableEntity
       if (!interactionDetails.grantId) {
-        // we don't have to pass grantId to consent, we're just modifying existing one
         consent.grantId = grantId
       }
 
