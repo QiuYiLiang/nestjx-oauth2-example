@@ -1,10 +1,12 @@
+import axios from 'axios'
+
 function App() {
   return (
     <>
       App1
       <button
         onClick={async () => {
-          const data = await fetch('/api/auth/getUserInfo')
+          const data = await axios.get('/api/auth/getUserInfo')
           console.log(data)
         }}
       >
