@@ -1,17 +1,24 @@
+import axios from 'axios'
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-import axios from 'axios'
 import { OidcClient } from 'oidc-client-ts'
 import { v4 } from 'uuid'
 import { enc } from 'crypto-js'
 
-const baseUrl = 'http://localhost:3000'
+// 认证服务器地址
+const oauthUrl = 'http://localhost:3000/oidc'
+// 本机地址
+const siteUrl = 'http://localhost:5001/api/auth'
+// 授权返回
+const scope = 'openid email'
 
 @Injectable()
 export class AuthService {
   constructor(private readonly jwtService: JwtService) {}
+  // TODO: 改为 redis 缓存用户 oauth state
   statesMap: Record<string, any> = {}
-  async getOidcUserInfo({
+  // 登陆完成，code 换 token
+  async loginFinished({
     code,
     state: stateId,
   }: {
@@ -27,7 +34,7 @@ export class AuthService {
     const code_verifier = state.code_verifier
     const access_token = (
       await axios.post(
-        'http://localhost:3000/oidc/token',
+        `${oauthUrl}/token`,
         {
           code,
           grant_type: 'authorization_code',
@@ -44,15 +51,13 @@ export class AuthService {
       )
     ).data.access_token
     const userInfo = (
-      await axios.get('http://localhost:3000/oidc/me', {
+      await axios.get(`${oauthUrl}/me`, {
         params: { access_token },
       })
     ).data
-    return userInfo
+    return await this.jwtService.signAsync(userInfo, { expiresIn: '1h' })
   }
-  async createToken(payload: any) {
-    return await this.jwtService.signAsync(payload, { expiresIn: '1h' })
-  }
+  // 校验 token 是否有效
   async validateToken(token?: string) {
     if (!token) {
       return false
@@ -64,15 +69,16 @@ export class AuthService {
       console.log(error)
     }
   }
-  async getLoginUri() {
-    const clientUrl = 'http://localhost:5001/api/auth'
+  // 获取 oauth 登陆链接
+  async getOAuthLoginUrl() {
     const oidcClient = new OidcClient({
-      authority: `${baseUrl}/oidc`,
+      authority: oauthUrl,
       client_id: 'app1',
-      redirect_uri: `${clientUrl}/login/`,
-      post_logout_redirect_uri: `${clientUrl}/logout/`,
+      // 用户登陆后，oauth 服务器会回掉到本服务，并带上code，获取 token
+      redirect_uri: `${siteUrl}/loginFinished`,
+      post_logout_redirect_uri: `${siteUrl}/logout/`,
       response_type: 'code',
-      scope: 'openid email',
+      scope,
       filterProtocolClaims: true,
     })
 
@@ -82,8 +88,5 @@ export class AuthService {
     })
     this.statesMap[state.id] = state
     return url
-  }
-  getUserInfo(token?: string) {
-    return this.jwtService.decode(token)
   }
 }

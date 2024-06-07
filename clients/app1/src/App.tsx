@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { request } from './request'
 
 function App() {
   return (
@@ -6,7 +6,7 @@ function App() {
       App1
       <button
         onClick={async () => {
-          const data = (await axios.get('/api/auth/getUserInfo')).data
+          const data = await request('/getUserInfo')
           if (data.success === false) {
             location.href = data.data
             return
