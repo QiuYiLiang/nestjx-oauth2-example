@@ -6,8 +6,8 @@ import { AuthService } from './auth.service'
 export class AppController {
   constructor(private readonly authService: AuthService) {}
   @Get('baseLogin')
-  baseLogin() {
-    return ''
+  async baseLogin(@Res() res: Response) {
+    res.redirect(await this.authService.getLoginUri())
   }
   @Get('login')
   async login(

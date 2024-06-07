@@ -9,16 +9,24 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest()
 
     const response: Response = context.switchToHttp().getResponse()
-    if (request.url.startsWith('/api/login/')) {
+    if (
+      request.url.startsWith('/api/login/') ||
+      request.url.startsWith('/api/baseLogin')
+    ) {
+      // 排除登录接口
       return true
     }
-    const headers = request.headers
-    const token = headers['x-token']
+    const token = request.cookies['x-token']
     const validRes = await this.authService.validateToken(token)
     if (validRes) {
+      // token 验证通过
       return true
     }
+    // token 失效，重新登录
     const loginUrl = await this.authService.getLoginUri()
-    response.redirect(loginUrl)
+    response.json({
+      success: false,
+      data: loginUrl,
+    })
   }
 }

@@ -58,10 +58,10 @@ export class AuthService {
       return false
     }
     try {
-      const { uid } = await this.jwtService.verifyAsync(token)
-      return typeof uid === 'string'
+      const data = await this.jwtService.verifyAsync(token)
+      return typeof data.email === 'string'
     } catch (error) {
-      return false
+      console.log(error)
     }
   }
   async getLoginUri() {
