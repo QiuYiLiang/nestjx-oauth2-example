@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
+
+const isLogout = location.pathname.startsWith('/logout')
 
 function App() {
   const [isRegister, setIsRegister] = useState(false)
@@ -30,6 +32,27 @@ function App() {
     if (success) {
       location.href = data
     }
+  }
+
+  const formRef = useRef<HTMLFormElement>(null)
+  useEffect(() => {
+    if (!isLogout) {
+      return
+    }
+    formRef.current?.submit()
+  }, [])
+  if (isLogout) {
+    const xsrf = new URLSearchParams(location.search).get('xsrf') as string
+    return (
+      <form
+        ref={formRef}
+        method='post'
+        action='/api/auth/oidc/session/end/confirm'
+      >
+        <input type='hidden' name='xsrf' value={xsrf} />
+        <input type='hidden' name='logout' value='yes' />
+      </form>
+    )
   }
   if (mode === 'authorization') {
     return <button onClick={authorization}>同意授权</button>

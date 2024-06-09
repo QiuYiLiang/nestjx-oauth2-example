@@ -9,8 +9,8 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @Get('login')
   async login(@Res() res: Response) {
-    const oauthloginUrl = await this.authService.getOAuthLoginUrl()
-    res.redirect(oauthloginUrl)
+    const oauthLoginUrl = await this.authService.getOAuthLoginUrl()
+    res.redirect(oauthLoginUrl)
   }
   @Get('loginFinished')
   async loginFinished(
@@ -33,5 +33,16 @@ export class AuthController {
     } catch (error) {
       res.redirect('/api/login')
     }
+  }
+  @Get('logout')
+  async logout(@Res() res: Response) {
+    const oauthLogoutUrl = await this.authService.getOAuthLogoutUrl()
+    res.redirect(oauthLogoutUrl)
+  }
+  @Get('logoutFinished')
+  async logoutFinished(@Res() res: Response) {
+    res.cookie('x-login', '')
+    res.cookie('x-token', '')
+    res.redirect(targetUrl)
   }
 }

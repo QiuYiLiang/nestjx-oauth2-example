@@ -16,6 +16,13 @@ function App() {
       >
         测试接口
       </button>
+      <button
+        onClick={async () => {
+          location.href = '/api/logout'
+        }}
+      >
+        退出登陆
+      </button>
     </>
   )
 }

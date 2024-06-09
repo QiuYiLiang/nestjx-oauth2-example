@@ -24,7 +24,6 @@ export class OidcProviderService {
         keys: this.configService.get('secureKey'),
       },
       jwks,
-      clients: this.configService.get('client'),
       adapter: createTypeOrmAdapter(dataSource),
       findAccount: this.accountService.findAccount.bind(this.accountService),
       interactions: {
@@ -39,6 +38,16 @@ export class OidcProviderService {
       },
       features: {
         devInteractions: { enabled: false },
+        rpInitiatedLogout: {
+          logoutSource({ response }, form) {
+            const pattern = /value="(.*)"/
+            const xsrf = form.match(pattern)[1]
+            response.redirect(`http://localhost:5000/logout?xsrf=${xsrf}`)
+          },
+          // postLogoutSuccessSource({ response }) {
+          //   response.redirect('http://127.0.0.1:5002')
+          // },
+        },
       },
     })
     this._oidc.on(
