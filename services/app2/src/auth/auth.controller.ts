@@ -24,6 +24,8 @@ export class AuthController {
         res.cookie('x-login', 1)
         res.cookie('x-token', token, {
           httpOnly: true,
+          expires: new Date(Date.now() + 60 * 60 * 24),
+          sameSite: 'lax',
         })
       }
       // 登陆完成跳转页面
