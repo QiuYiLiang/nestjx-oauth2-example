@@ -8,7 +8,7 @@ import { enc } from 'crypto-js'
 // 认证服务器地址
 const oauthUrl = 'http://localhost:3000/oidc'
 // 本机地址
-const siteUrl = 'http://localhost:3002/api'
+const siteUrl = 'http://127.0.0.1:3002/api'
 // 授权返回
 const scope = 'openid email'
 
@@ -29,7 +29,7 @@ export class AuthService {
     const authorization =
       'Basic ' +
       enc.Base64.stringify(
-        enc.Utf8.parse('app1:strastrastrcxdzxctwparstarstwqdqwfpat')
+        enc.Utf8.parse('app2:strastrastrcxdzxctwparstarstwqdqwfpat')
       )
     const state = this.statesMap[stateId]
     const code_verifier = state.code_verifier
@@ -74,7 +74,7 @@ export class AuthService {
   async getOAuthLoginUrl() {
     const oidcClient = new OidcClient({
       authority: oauthUrl,
-      client_id: 'app1',
+      client_id: 'app2',
       // 用户登陆后，oauth 服务器会回掉到本服务，并带上code，获取 token
       redirect_uri: `${siteUrl}/loginFinished`,
       post_logout_redirect_uri: `${siteUrl}/logout`,

@@ -2,7 +2,7 @@ import { Controller, Get, Query, Res } from '@nestjs/common'
 import { Response } from 'express'
 import { AuthService } from './auth.service'
 
-const targetUrl = 'http://localhost:5002'
+const targetUrl = 'http://127.0.0.1:5002'
 
 @Controller()
 export class AuthController {
