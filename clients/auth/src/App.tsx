@@ -17,12 +17,9 @@ function App() {
   }, [])
   const login = async () => {
     const {
-      data: { success, data, autoAuthorization },
+      data: { success, data },
     } = await axios.post(`/api/auth/interaction/login`, form)
     if (success) {
-      if (autoAuthorization) {
-        localStorage.setItem('auto', 'true')
-      }
       location.href = data
     }
   }
@@ -34,14 +31,11 @@ function App() {
       location.href = data
     }
   }
-  if (mode === 'interaction') {
-    const isAuto = localStorage.getItem('auto') === 'true'
-    if (isAuto) {
-      localStorage.removeItem('auto')
-      authorization()
-      return
-    }
+  if (mode === 'authorization') {
     return <button onClick={authorization}>同意授权</button>
+  }
+  if (mode === 'autoAuthorization') {
+    authorization()
   }
   if (mode === 'login') {
     return (

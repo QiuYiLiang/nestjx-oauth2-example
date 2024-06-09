@@ -34,13 +34,14 @@ export class InteractionsController {
 
       if (prompt.name === 'consent') {
         res.json({
-          mode: 'interaction',
+          mode: clitenIds.includes(params.client_id as string)
+            ? 'autoAuthorization'
+            : 'authorization',
           data: {
             client,
             uid,
             details: prompt.details,
             params,
-            title: 'Authorize',
           },
         })
         return
@@ -91,7 +92,6 @@ export class InteractionsController {
       res.json({
         success: true,
         data,
-        autoAuthorization: clitenIds.includes(params.client_id as string),
       })
     } catch (err) {
       res.json({
