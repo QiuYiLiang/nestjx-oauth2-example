@@ -17,27 +17,31 @@ function App() {
   }, [])
   const login = async () => {
     const {
-      data: { success, data },
+      data: { success, data, autoAuthorization },
     } = await axios.post(`/api/auth/interaction/login`, form)
+    if (success) {
+      if (autoAuthorization) {
+        localStorage.setItem('auto', 'true')
+      }
+      location.href = data
+    }
+  }
+  const authorization = async () => {
+    const {
+      data: { success, data },
+    } = await axios.post(`/api/auth/interaction/authorization`)
     if (success) {
       location.href = data
     }
   }
   if (mode === 'interaction') {
-    return (
-      <button
-        onClick={async () => {
-          const {
-            data: { success, data },
-          } = await axios.post(`/api/auth/interaction/authorization`)
-          if (success) {
-            location.href = data
-          }
-        }}
-      >
-        同意授权
-      </button>
-    )
+    const isAuto = localStorage.getItem('auto') === 'true'
+    if (isAuto) {
+      localStorage.removeItem('auto')
+      authorization()
+      return
+    }
+    return <button onClick={authorization}>同意授权</button>
   }
   if (mode === 'login') {
     return (

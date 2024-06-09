@@ -5,6 +5,8 @@ import * as assert from 'assert'
 import { BaseGrantableEntity } from '../entities/BaseGrantableEntity'
 import { AccountService } from '../account/account.service'
 
+const clitenIds = ['app1']
+
 @Controller('interaction')
 export class InteractionsController {
   constructor(
@@ -55,7 +57,7 @@ export class InteractionsController {
   @Post('login')
   async login(@Req() req: Request, @Res() res: Response) {
     try {
-      const { prompt } = await this.oidcService.oidc.interactionDetails(
+      const { prompt, params } = await this.oidcService.oidc.interactionDetails(
         req,
         res
       )
@@ -89,6 +91,7 @@ export class InteractionsController {
       res.json({
         success: true,
         data,
+        autoAuthorization: clitenIds.includes(params.client_id as string),
       })
     } catch (err) {
       res.json({
