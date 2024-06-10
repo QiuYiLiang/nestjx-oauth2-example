@@ -70,7 +70,7 @@ export class AuthService {
         params: { access_token },
       })
     ).data
-    return await this.jwtService.signAsync(userInfo, { expiresIn: '1h' })
+    return await this.jwtService.signAsync(userInfo)
   }
   // 校验 token 是否有效
   async validateToken(token?: string) {
