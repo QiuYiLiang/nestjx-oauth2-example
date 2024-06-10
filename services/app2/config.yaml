@@ -1,5 +1,5 @@
 jwtSecret: rotnriatr12313sraut13tasrt212f1trsat
-targetUrl: http://localhost:5002
+targetUrl: http://127.0.0.1:5002
 scopes:
   - openid
   - email

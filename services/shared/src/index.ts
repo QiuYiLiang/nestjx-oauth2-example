@@ -1,4 +1,4 @@
-export { AuthModule, AuthService } from './auth'
+export { AuthModule } from './auth'
 export { GlobalConfigModule } from './config/config.module'
 export { GlobalJwtModule } from './jwt/jwt.module'
 export * from './gurads'
