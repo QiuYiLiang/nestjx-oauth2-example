@@ -14,6 +14,6 @@ import { JwtModule } from '@nestjs/jwt'
       inject: [ConfigService],
     }),
   ],
-  exports: [],
+  exports: [JwtModule],
 })
 export class GlobalJwtModule {}

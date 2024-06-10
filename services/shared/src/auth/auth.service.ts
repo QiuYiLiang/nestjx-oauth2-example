@@ -17,7 +17,7 @@ const scope = 'openid email'
 @Injectable()
 export class AuthService {
   private oidcClient: OidcClient
-  constructor(private readonly jwtService: JwtService) {
+  constructor(private jwtService: JwtService) {
     this.oidcClient = new OidcClient({
       authority: oidcUrl,
       client_id: 'app2',
