@@ -1,1 +1,9 @@
-jwtSecret: rotnriatr12313sraut13tasrt212f1trsat
+jwtSecret: arsht934n2132smatn289381niraesnt923
+clientId: app1
+clientSecret: strastrastrcxdzxctwparstarstwqdqwfpat
+targetUrl: http://localhost:5001
+scopes:
+  - openid
+  - email
+localUrl: http://localhost:3001/api
+oidcUrl: http://localhost:3000/oidc

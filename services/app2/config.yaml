@@ -1,7 +1,9 @@
-jwtSecret: rotnriatr12313sraut13tasrt212f1trsat
+jwtSecret: arsht934n2132smatn289381niraesnt923
+clientId: app2
+clientSecret: straarstarststrastrcxdzxcrstarsttwparstarstwqdqwfpat
 targetUrl: http://127.0.0.1:5002
 scopes:
   - openid
   - email
-siteUrl: http://127.0.0.1:3002/api
+localUrl: http://127.0.0.1:3002/api
 oidcUrl: http://localhost:3000/oidc

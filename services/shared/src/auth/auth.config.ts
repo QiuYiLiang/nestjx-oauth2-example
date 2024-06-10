@@ -1,9 +1,11 @@
 import { ConfigurableModuleBuilder } from '@nestjs/common'
 
 export interface AuthModuleOptions {
+  clientId: string
+  clientSecret: string
   targetUrl: string
   scopes: string[]
-  siteUrl: string
+  localUrl: string
   oidcUrl: string
 }
 

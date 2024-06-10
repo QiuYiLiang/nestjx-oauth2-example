@@ -1,22 +1,30 @@
 import { Module } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { APP_GUARD } from '@nestjs/core'
-import { AuthGuard } from './gurads/auth.guard'
-import { UserModule } from './user/user.module'
-import { ConfigModule } from '@nestjs/config'
-import { AuthModule } from './auth/auth.module'
-import { AuthService } from './auth/auth.service'
-import configuration from './config/configuration'
-import { GlobalJwtModule } from './jwt/jwt.module'
+import {
+  AuthGuard,
+  AuthModule,
+  GlobalConfigModule,
+  GlobalJwtModule,
+} from '@zero-code/shared'
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
+    GlobalConfigModule,
     GlobalJwtModule,
-    AuthModule,
-    UserModule,
+    AuthModule.registerAsync({
+      useFactory: (configService: ConfigService) => {
+        return {
+          targetUrl: configService.get('targetUrl'),
+          scopes: configService.get('scopes'),
+          siteUrl: configService.get('siteUrl'),
+          oidcUrl: configService.get('oidcUrl'),
+        }
+      },
+      inject: [ConfigService],
+    }),
   ],
   providers: [
-    AuthService,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,

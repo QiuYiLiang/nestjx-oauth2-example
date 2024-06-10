@@ -15,10 +15,10 @@ export class AuthService {
   ) {
     this.oidcClient = new OidcClient({
       authority: this.options.oidcUrl,
-      client_id: 'app2',
+      client_id: this.options.clientId,
       // 用户登陆后，oauth 服务器会回掉到本服务，并带上code，获取 token
-      redirect_uri: `${this.options.siteUrl}/loginFinished`,
-      post_logout_redirect_uri: `${this.options.siteUrl}/logoutFinished`,
+      redirect_uri: `${this.options.oidcUrl}/loginFinished`,
+      post_logout_redirect_uri: `${this.options.oidcUrl}/logoutFinished`,
       response_type: 'code',
       scope: this.options.scopes.join(' '),
       filterProtocolClaims: true,
@@ -38,7 +38,7 @@ export class AuthService {
     const authorization =
       'Basic ' +
       enc.Base64.stringify(
-        enc.Utf8.parse('app2:strastrastrcxdzxctwparstarstwqdqwfpat')
+        enc.Utf8.parse(`${this.options.clientId}:${this.options.clientSecret}`)
       )
     const state = this.statesMap[stateId]
     const code_verifier = state.code_verifier
