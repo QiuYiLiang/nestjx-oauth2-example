@@ -1,11 +1,9 @@
 import axios from 'axios'
-import { Inject, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { OidcClient } from 'oidc-client-ts'
 import { v4 } from 'uuid'
 import { enc } from 'crypto-js'
-import { ConfigModuleOptions } from '@nestjs/config'
-import { MODULE_OPTIONS_TOKEN } from './auth.config'
 
 const authUrl = 'http://localhost:3000'
 
@@ -19,10 +17,7 @@ const scope = 'openid email'
 @Injectable()
 export class AuthService {
   private oidcClient: OidcClient
-  constructor(
-    @Inject(MODULE_OPTIONS_TOKEN) private options: ConfigModuleOptions,
-    private readonly jwtService: JwtService
-  ) {
+  constructor(private readonly jwtService: JwtService) {
     this.oidcClient = new OidcClient({
       authority: oidcUrl,
       client_id: 'app2',

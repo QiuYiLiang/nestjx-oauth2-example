@@ -1,6 +1,6 @@
 import { Injectable, ExecutionContext, CanActivate } from '@nestjs/common'
 import { Response } from 'express'
-import { AuthService } from 'src/auth/auth.service'
+import { AuthService } from '../auth/auth.service'
 
 // 排除登录接口
 const passUrls = ['/api/login', '/api/loginFinished']
@@ -31,5 +31,6 @@ export class AuthGuard implements CanActivate {
       success: false,
       data: loginUrl,
     })
+    return false
   }
 }

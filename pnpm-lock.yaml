@@ -166,6 +166,9 @@ importers:
       '@types/js-yaml':
         specifier: ^4.0.9
         version: 4.0.9
+      '@zero-code/shared':
+        specifier: workspace:^
+        version: link:../shared
       axios:
         specifier: ^1.7.2
         version: 1.7.2
@@ -285,7 +288,7 @@ importers:
         specifier: ^4.0.9
         version: 4.0.9
       '@zero-code/shared':
-        specifier: 'workspace: *'
+        specifier: workspace:^
         version: link:../shared
       axios:
         specifier: ^1.7.2
