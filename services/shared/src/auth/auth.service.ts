@@ -1,31 +1,26 @@
 import axios from 'axios'
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { OidcClient } from 'oidc-client-ts'
 import { v4 } from 'uuid'
 import { enc } from 'crypto-js'
-
-const authUrl = 'http://localhost:3000'
-
-// 认证服务器地址
-const oidcUrl = `${authUrl}/oidc`
-// 本机地址
-const siteUrl = 'http://127.0.0.1:3002/api'
-// 授权返回
-const scope = 'openid email'
+import { AuthModuleOptions, MODULE_OPTIONS_TOKEN } from './auth.config'
 
 @Injectable()
 export class AuthService {
   private oidcClient: OidcClient
-  constructor(private jwtService: JwtService) {
+  constructor(
+    private jwtService: JwtService,
+    @Inject(MODULE_OPTIONS_TOKEN) private options: AuthModuleOptions
+  ) {
     this.oidcClient = new OidcClient({
-      authority: oidcUrl,
+      authority: this.options.oidcUrl,
       client_id: 'app2',
       // 用户登陆后，oauth 服务器会回掉到本服务，并带上code，获取 token
-      redirect_uri: `${siteUrl}/loginFinished`,
-      post_logout_redirect_uri: `${siteUrl}/logoutFinished`,
+      redirect_uri: `${this.options.siteUrl}/loginFinished`,
+      post_logout_redirect_uri: `${this.options.siteUrl}/logoutFinished`,
       response_type: 'code',
-      scope,
+      scope: this.options.scopes.join(' '),
       filterProtocolClaims: true,
     })
   }
@@ -49,7 +44,7 @@ export class AuthService {
     const code_verifier = state.code_verifier
     const access_token = (
       await axios.post(
-        `${oidcUrl}/token`,
+        `${this.options.oidcUrl}/token`,
         {
           code,
           grant_type: 'authorization_code',
@@ -66,7 +61,7 @@ export class AuthService {
       )
     ).data.access_token
     const userInfo = (
-      await axios.get(`${oidcUrl}/me`, {
+      await axios.get(`${this.options.oidcUrl}/me`, {
         params: { access_token },
       })
     ).data

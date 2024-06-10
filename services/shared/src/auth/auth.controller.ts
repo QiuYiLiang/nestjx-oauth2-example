@@ -1,12 +1,14 @@
-import { Controller, Get, Query, Res } from '@nestjs/common'
+import { Controller, Get, Inject, Query, Res } from '@nestjs/common'
 import { Response } from 'express'
 import { AuthService } from './auth.service'
-
-const targetUrl = 'http://127.0.0.1:5002'
+import { AuthModuleOptions, MODULE_OPTIONS_TOKEN } from './auth.config'
 
 @Controller()
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    @Inject(MODULE_OPTIONS_TOKEN) private options: AuthModuleOptions
+  ) {}
   @Get('login')
   async login(@Res() res: Response) {
     const oauthLoginUrl = await this.authService.getOAuthLoginUrl()
@@ -29,7 +31,7 @@ export class AuthController {
         })
       }
       // 登陆完成跳转页面
-      res.redirect(targetUrl)
+      res.redirect(this.options.targetUrl)
     } catch (error) {
       res.redirect('/api/login')
     }
@@ -43,6 +45,6 @@ export class AuthController {
   async logoutFinished(@Res() res: Response) {
     res.cookie('x-login', '')
     res.cookie('x-token', '')
-    res.redirect(targetUrl)
+    res.redirect(this.options.targetUrl)
   }
 }

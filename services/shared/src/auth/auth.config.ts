@@ -1,5 +1,11 @@
 import { ConfigurableModuleBuilder } from '@nestjs/common'
-import { ConfigModuleOptions } from '@nestjs/config'
+
+export interface AuthModuleOptions {
+  targetUrl: string
+  scopes: string[]
+  siteUrl: string
+  oidcUrl: string
+}
 
 export const { ConfigurableModuleClass, MODULE_OPTIONS_TOKEN } =
-  new ConfigurableModuleBuilder<ConfigModuleOptions>().build()
+  new ConfigurableModuleBuilder<AuthModuleOptions>().build()

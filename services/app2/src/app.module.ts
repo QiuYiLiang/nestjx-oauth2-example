@@ -9,7 +9,15 @@ import {
 } from '@zero-code/shared'
 
 @Module({
-  imports: [GlobalConfigModule, GlobalJwtModule, AuthModule],
+  imports: [
+    GlobalConfigModule,
+    GlobalJwtModule,
+    AuthModule.registerAsync({
+      useFactory: () => {
+        return {}
+      },
+    }),
+  ],
   providers: [
     AuthService,
     {
