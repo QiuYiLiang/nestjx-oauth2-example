@@ -1,1 +1,7 @@
 jwtSecret: rotnriatr12313sraut13tasrt212f1trsat
+targetUrl: http://localhost:5002
+scopes:
+  - openid
+  - email
+siteUrl: http://127.0.0.1:3002/api
+oidcUrl: http://localhost:3000/oidc
