@@ -1,20 +1,13 @@
-import { request } from './request'
-
 function App() {
   return (
     <>
       App1
       <button
         onClick={async () => {
-          const data = await request('/getUserInfo', {})
-          if (data.success === false) {
-            location.href = data.data
-            return
-          }
-          console.log(data)
+          location.href = '/api/logout'
         }}
       >
-        测试接口
+        退出登陆
       </button>
     </>
   )

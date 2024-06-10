@@ -15,9 +15,11 @@ import {
     AuthModule.registerAsync({
       useFactory: (configService: ConfigService) => {
         return {
+          clientId: configService.get('clientId'),
+          clientSecret: configService.get('clientSecret'),
           targetUrl: configService.get('targetUrl'),
           scopes: configService.get('scopes'),
-          siteUrl: configService.get('siteUrl'),
+          localUrl: configService.get('localUrl'),
           oidcUrl: configService.get('oidcUrl'),
         }
       },

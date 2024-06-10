@@ -17,8 +17,8 @@ export class AuthService {
       authority: this.options.oidcUrl,
       client_id: this.options.clientId,
       // 用户登陆后，oauth 服务器会回掉到本服务，并带上code，获取 token
-      redirect_uri: `${this.options.oidcUrl}/loginFinished`,
-      post_logout_redirect_uri: `${this.options.oidcUrl}/logoutFinished`,
+      redirect_uri: `${this.options.localUrl}/loginFinished`,
+      post_logout_redirect_uri: `${this.options.localUrl}/logoutFinished`,
       response_type: 'code',
       scope: this.options.scopes.join(' '),
       filterProtocolClaims: true,
